@@ -7,6 +7,8 @@
 
 from time import sleep
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
@@ -51,8 +53,10 @@ class PageElement(object):
 
     def find(self, context):
         try:
+            WebDriverWait(context, 10).until(EC.presence_of_element_located(self.locator))
             return context.find_element(*self.locator)
-        except NoSuchElementException:
+        except:  # NoSuchElementException
+            log.error('no find this element:%s' % self.desc)
             return None
 
     def __get__(self, instance, owner, context=None):
@@ -77,6 +81,7 @@ class PageElements(PageElement):
 
     def find(self, context):
         try:
+            WebDriverWait(context, 10).until(EC.presence_of_element_located(self.locator))
             return context.find_elements(*self.locator)
         except NoSuchElementException:
             return []
