@@ -39,7 +39,7 @@ def get_accesstoken(url, username, password):
     rec4 = requests.get(redirect_url3, allow_redirects=False)
     SESSION = rec4.cookies.get('SESSION')
     # 获取第四个重定向地址 http://172.21.23.82/zuul/api/checkIsFirst?ticket=ST-46-4Vw3O9p5g6aEIDSNfmecfje05nocms
-    headers = {
+    _headers = {
         'Cookie': 'SESSION=%s' % SESSION,
         'Content-Type': 'application/x-www-form-urlencoded'
     }
@@ -50,18 +50,18 @@ def get_accesstoken(url, username, password):
         '_eventId': 'submit',
         'geolocation': ''
     }
-    rec5 = requests.post(redirect_url3, allow_redirects=False, headers=headers, data=payload)
+    rec5 = requests.post(redirect_url3, allow_redirects=False, headers=_headers, data=payload)
     redirect_url4 = rec5.headers.get('Location')
     # 获取第五个重定向地址 http://172.21.23.82/zuul/api/checkIsFirst;jsessionid=EBBE8F4E39FBD55A564C4097ED53683D
     rec6 = requests.get(redirect_url4, allow_redirects=False)
     JSESSIONID = rec6.cookies.get('JSESSIONID')
     redirect_url5 = rec6.headers.get('Location')
     # 获取accessToken
-    headers = {
+    _headers = {
         'Cookie': 'JSESSIONID=%s' % JSESSIONID,
         'Content-Type': 'application/x-www-form-urlencoded'
     }
-    rec7 = requests.get(redirect_url5, headers=headers)
+    rec7 = requests.get(redirect_url5, headers=_headers)
     accessToken = rec7.cookies.get('accessToken')
     return accessToken
 
