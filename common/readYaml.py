@@ -9,7 +9,7 @@ import yaml
 import os
 
 
-class YamlReader:
+class YamlReader(object):
     def __init__(self, yamlf):
         if os.path.exists(yamlf):
             self.yamlf = yamlf
