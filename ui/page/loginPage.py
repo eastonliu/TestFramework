@@ -26,6 +26,8 @@ class LoginPage(Page):
     username_input = PageElement(id_='username', describe='用户名输入框')
     password_input = PageElement(id_='password', describe='密码输入框')
     submit_btn = PageElement(name='submit', describe='登录按钮')
+    msg_tips = PageElement(class_name='msg-tips', describe='滑块提示信息')
+    msg_login = PageElement(css='div.alert', describe='登录结果提示信息')
 
     def get_snap(self):
         """
@@ -55,9 +57,6 @@ class LoginPage(Page):
     def get_template_image(self):
         """
         和本地的原始图片库对比，找出原始图,任意取两个点，对比RGB，RGB差值在一定范围内，就认为两张图一样
-        :driver:浏览器驱动
-        :captcha_path：验证码图片保存路径
-        :template_path：原始土拍你保存路径
         :return: 原始图对象
         """
         diff = 10
@@ -77,10 +76,6 @@ class LoginPage(Page):
                 captcha_image_point2[2] - image_obj_point2[2]) < diff
             if condition1 and condition2:
                 return image_obj
-        # re_btn = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "re-btn")))
-        # ActionChains(driver).click(re_btn).perform()
-        # sleep(3)
-        # get_template_image()
         return None
 
     def get_distance(self, template_image, captcha_image):
@@ -144,9 +139,6 @@ class LoginPage(Page):
     def drag_captcha(self):
         """
         拖动滑块验证
-        :param driver:浏览器驱动
-        :param captcha_path:验证码图片保存路径
-        :param template_path:原始图片保存路径
         :return:
         """
         template_image = self.get_template_image()
@@ -169,7 +161,7 @@ class LoginPage(Page):
         sleep(0.5)  # 0.5秒后释放鼠标
         ActionChains(self.driver).release().perform()
         sleep(3)
-        result_text = self.driver.find_element_by_class_name("msg-tips").text
+        result_text = self.msg_tips.text
         if result_text != "验证成功":
             ActionChains(self.driver).click(self.re_btn).perform()
             self.drag_captcha()
@@ -178,10 +170,8 @@ class LoginPage(Page):
     def login(self, username, password):
         """
         登录
-        :param username:
-        :param password:
-        :param page_image_path:
-        :param template_path:
+        :param username:用户名
+        :param password:密码
         :return:
         """
         self.username_input.send_keys(username)
