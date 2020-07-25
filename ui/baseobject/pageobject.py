@@ -13,7 +13,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
 from common.exceptions import FindElementTypesError
-from common import log
+from common.log import logger
 
 LOCATOR_LIST = {
     'id_': By.ID,
@@ -56,7 +56,7 @@ class PageElement(object):
             WebDriverWait(context, 10).until(EC.presence_of_element_located(self.locator))
             return context.find_element(*self.locator)
         except:  # NoSuchElementException
-            log.error('no find this element:%s' % self.desc)
+            logger.error('no find this element:%s' % self.desc)
             return None
 
     def __get__(self, instance, owner, context=None):
