@@ -1,0 +1,13 @@
+-
+  url : /api/v1/portal/sysMenus
+  method : post
+  detail : 获取应用菜单树V2接口
+  body :
+    sysCode : "system_66545bfde74747cfa2e30fc739138d99"
+    sysListReturnAllMenu : 0
+-
+  url: /api/v2/portal/sysButtons
+  method: post
+  detail: 获取应用的按钮列表V2接口
+  body:
+    sysCode: "system_66545bfde74747cfa2e30fc739138d99"
