@@ -13,6 +13,7 @@ BASE_PATH = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0]
 CONFIG_FILE = os.path.join(BASE_PATH, 'config', 'config.yaml')
 STATIC_PATH = os.path.join(BASE_PATH, 'static')
 DRIVER_PATH = os.path.join(BASE_PATH, 'drivers')
+GOOGLE_DRIVER = os.path.join(BASE_PATH, 'drivers','chromedriver.exe')
 API_PATH = os.path.join(BASE_PATH, 'api')
 LOGS_PATH = os.path.join(BASE_PATH, 'logs')
 USERNAME = YamlReader(CONFIG_FILE).data['username']
