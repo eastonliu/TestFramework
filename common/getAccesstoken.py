@@ -3,19 +3,30 @@
 
 # @Time   : 2020/7/24 15:18
 # @Author : Eastonliu
-# @Desc   :
+# @Desc   : 根据用户名和密码获取此用户的accesstoken
 
 import requests
-import base64
+import hashlib
+
+
+def md5(str):
+    """
+    对字符串进行MD5加密
+    :param str: 原始字符串
+    :return: 加密后的字符串
+    """
+    m = hashlib.md5()
+    m.update(str.encode("utf8"))
+    return m.hexdigest()
 
 
 def get_accesstoken(url, username, password):
     """
     根据用户名和密码获取accesstoken
-    :param url:
+    :param url: 请求URL
     :param username: 用户名
     :param password: 密码
-    :return:
+    :return: accesstoken
     """
     rec1 = requests.get(r'%s/zuul/api/checkIsFirst' % url, allow_redirects=False)
     redirect_url1 = rec1.headers.get('Location')
@@ -28,6 +39,7 @@ def get_accesstoken(url, username, password):
     # 获取SESSION1
     rec4 = requests.get(redirect_url3, allow_redirects=False)
     SESSION = rec4.cookies.get('SESSION')
+    # SESSION = 'e14429dd-f23f-478d-9f0e-ed7105bf2660'
     # 获取第四个重定向地址 http://172.21.23.82/zuul/api/checkIsFirst?ticket=ST-46-4Vw3O9p5g6aEIDSNfmecfje05nocms
     _headers = {
         'Cookie': 'SESSION=%s' % SESSION,
@@ -35,7 +47,7 @@ def get_accesstoken(url, username, password):
     }
     payload = {
         'username': username,
-        'password': str(base64.b64encode(password.encode()), 'ascii'),
+        'password': md5(password),
         'execution': 'e1s1',
         '_eventId': 'submit',
         'geolocation': ''
