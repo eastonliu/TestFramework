@@ -17,3 +17,6 @@ class Page(PageObject):
             raise ValueError("Please input js script")
 
         return self.driver.execute_script(js, *args)
+
+    def maximize_window(self):
+        self.driver.maximize_window()
