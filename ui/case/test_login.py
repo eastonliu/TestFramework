@@ -5,52 +5,49 @@
 # @Author : Eastonliu
 # @Desc   :
 
-
+import pytest
 import unittest
 from selenium import webdriver
 import math
 import random
 from common import URL, GOOGLE_DRIVER, USERNAME, PASSWORD
-from ui.baseobject.page import Page
 from ui.page.loginPage import LoginPage
-from ui.page.homePage import HomePage
+from ui.page.comPage import ComPage
 
 
-class TestLogin(unittest.TestCase):
+class TestLogin:
     """
     登录功能
     """
+    data1 = [
+        (USERNAME, PASSWORD, "首页")
+    ]
 
-    def setUp(self) -> None:
-        self.driver = webdriver.Chrome(executable_path=GOOGLE_DRIVER)
-        self.page = LoginPage(self.driver)
-        self.page.get(URL)
-        self.driver.maximize_window()
-
-    def tearDown(self) -> None:
-        self.driver.quit()
-
-    def test_00(self):
+    @pytest.mark.parametrize("username,password,expect", data1, ids=[
+        "账号密码正确，登录成功",
+    ])
+    def test_00(self, login, username, password, expect):
         """
         用户名和密码正确，登陆成功
         :return:
         """
-        self.page.login(username=USERNAME, password=PASSWORD)
-        HomePage(self.driver)
-        home_text = HomePage(self.driver).home_text.text
-        self.assertEqual(home_text, "首页")
+        home_text = ComPage(login.driver).home_text.text
+        assert home_text == expect
 
-    def test_01(self):
+    data2 = [
+        ("POLHKITR", PASSWORD, "用户信息不存在"),
+        (USERNAME, math.floor(1e8 * random.random()), "用户名或密码错误"),
+    ]
+
+    @pytest.mark.parametrize("username,password,expect", data2, ids=[
+        "账号不存在，登录失败",
+        "账号正确，密码错误，登录失败"
+    ])
+    def test_01(self, login, username, password, expect):
         """
         用户名和密码不匹配，登录失败
         :return:
         """
-        # 随机生成一个8位数的密码
-        pwd = math.floor(1e8 * random.random())
-        self.page.login(username=USERNAME, password=pwd)
-        result_text = self.page.msg_login.text
-        self.assertEqual(result_text, "用户名或密码错误")
+        result_text = login.msg_login.text
+        assert result_text == expect
 
-
-if __name__ == '__main__':
-    unittest.main(verbosity=2)
