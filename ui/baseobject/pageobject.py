@@ -66,6 +66,7 @@ class PageElement(object):
             return lambda ctx: self.__get__(instance, owner, context=ctx)
         if not context:
             context = instance.driver
+        print(context)
         return self.find(context)
 
     def __set__(self, instance, value):
@@ -78,11 +79,16 @@ class PageElement(object):
 
 
 class PageElements(PageElement):
+    def __init__(self, index=None, **kwargs):
+        super().__init__(context=False, describe="undefined", **kwargs)
+        self.index = index
 
     def find(self, context):
         try:
             WebDriverWait(context, 10).until(EC.presence_of_element_located(self.locator))
-            return context.find_elements(*self.locator)
+            if self.index is None:
+                return context.find_elements(*self.locator)
+            return context.find_elements(*self.locator)[self.index]
         except NoSuchElementException:
             return []
 
